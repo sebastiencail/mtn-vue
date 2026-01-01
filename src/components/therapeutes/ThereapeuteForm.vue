@@ -41,6 +41,7 @@ import {
   UpdateTherapeuteDto,
   CreateTherapeuteDto,
   toUpdateTherapeuteDto,
+  createTherapeute,
 } from '@/api/therapeutes.api'
 import { omit } from 'lodash'
 import ErrorFormAlert from '../commons/ErrorFormAlert.vue'
@@ -102,7 +103,7 @@ const submit = async () => {
   } else doUpdateTherapeute()
 }
 
-const doCreateTherapeute = (therapeuteToCreate: ReadTherapeuteDto) => {
+const doCreateTherapeute = async (therapeuteToCreate: ReadTherapeuteDto) => {
   const payload = toUpdateTherapeuteDto(therapeuteToCreate)
   try {
     therapeute.value = await createTherapeute(payload)
@@ -114,7 +115,7 @@ const doCreateTherapeute = (therapeuteToCreate: ReadTherapeuteDto) => {
   }
 }
 
-const doUpdateTherapeute = () => {
+const doUpdateTherapeute = async () => {
   if (!therapeute.value) return
   const payload = toUpdateTherapeuteDto(therapeute.value)
 
