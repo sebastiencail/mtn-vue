@@ -46,7 +46,7 @@ export interface paths {
         get: operations["TherapeuteController_findOne"];
         put?: never;
         post?: never;
-        delete: operations["TherapeuteController_remove"];
+        delete: operations["TherapeuteController_delete"];
         options?: never;
         head?: never;
         patch: operations["TherapeuteController_update"];
@@ -59,7 +59,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["TarifController_findAll"];
+        get: operations["TarifController_findTarifs"];
         put?: never;
         post: operations["TarifController_create"];
         delete?: never;
@@ -177,8 +177,25 @@ export interface components {
             email?: string;
             siteWeb?: string;
         };
-        CreateTarifDto: Record<string, never>;
-        UpdateTarifDto: Record<string, never>;
+        CreateTarifDto: {
+            description: string;
+            prix: string;
+            ordre: number;
+            therapeuteId: number;
+        };
+        ReadTarifDto: {
+            description: string;
+            prix: string;
+            ordre: number;
+            therapeuteId: number;
+            id: number;
+        };
+        UpdateTarifDto: {
+            description: string;
+            prix: string;
+            ordre: number;
+            therapeuteId: number;
+        };
         CreateSoinDto: Record<string, never>;
         UpdateSoinDto: Record<string, never>;
         CreateConsultationDto: Record<string, never>;
@@ -270,12 +287,12 @@ export interface operations {
             };
         };
     };
-    TherapeuteController_remove: {
+    TherapeuteController_delete: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                id: string;
+                id: number;
             };
             cookie?: never;
         };
@@ -312,9 +329,12 @@ export interface operations {
             };
         };
     };
-    TarifController_findAll: {
+    TarifController_findTarifs: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description ID du thérapeute pour filtrer les tarifs */
+                therapeute?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -325,7 +345,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ReadTarifDto"][];
+                };
             };
         };
     };
@@ -342,11 +364,13 @@ export interface operations {
             };
         };
         responses: {
-            201: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ReadTarifDto"];
+                };
             };
         };
     };
@@ -365,7 +389,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ReadTarifDto"];
+                };
             };
         };
     };
@@ -407,7 +433,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ReadTarifDto"];
+                };
             };
         };
     };

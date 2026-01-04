@@ -1,16 +1,20 @@
 <template>
-  <v-card>
-    <v-data-table :items="therapeutes" hover :headers="headers">
+  <v-card title="Liste des thérapeutes">
+    <template v-slot:text>
+      <v-text-field
+        v-model="search"
+        label="Search"
+        prepend-inner-icon="mdi-magnify"
+        variant="outlined"
+        hide-details
+        single-line
+      ></v-text-field>
+    </template>
+    <v-data-table :items="therapeutes" hover :headers="headers" :search="search">
       <template v-slot:top>
         <v-toolbar>
-          <v-toolbar-title>
-            <v-icon color="medium-emphasis" icon="mdi-book-multiple" size="x-small" start></v-icon>
-
-            Liste des thérapeutes
-          </v-toolbar-title>
-
           <v-btn
-            class="me-2"
+            class="me-2 bg-blue"
             rounded="lg"
             text="Ajouter un thérapeute"
             prepend-icon="mdi-plus"
@@ -52,6 +56,7 @@ type ReadTherapeute = components['schemas']['ReadTherapeuteDto']
 
 const therapeutes = ref<ReadTherapeute[]>([])
 const therapeuteToDelete = ref<ReadTherapeute>()
+const search = ref('')
 
 const router = useRouter()
 const confirmDeleteDialog = ref(false)
@@ -96,8 +101,6 @@ const doDeleteTherapeute = async () => {
     await deleteTherapeute(therapeuteToDelete.value.id)
     fetchTherapeutes()
   } catch (error: any) {
-    //const objError = JSON.parse(error.message)
-    //txtErreurSubmit.value = objError.message
     console.error(error)
   }
 }
