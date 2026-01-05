@@ -1,27 +1,79 @@
 <template>
-  <v-btn text="Ajouter un tarif"></v-btn>
+  <v-card title="Tarifs">
+    <v-container>
+      <v-btn text="+ Ajouter un tarif" @click="addTarif()" class="mb-4"></v-btn>
+      <v-row v-for="tarif in tarifs" align="center">
+        <v-col cols="4"
+          ><v-text-field
+            v-model="tarif.description"
+            label="Description"
+            density="compact"
+            hide-details
+          ></v-text-field
+        ></v-col>
+        <v-col cols="4"
+          ><v-text-field
+            v-model="tarif.prix"
+            label="Prix"
+            density="compact"
+            hide-details
+          ></v-text-field
+        ></v-col>
+        <v-col><v-btn class="bg-secondary" @click="doUpdateTarif(tarif)">Enregistrer</v-btn></v-col>
+        <v-col><v-btn class="bg-red" @click="removeTarif(tarif.id)">Supprimer</v-btn></v-col>
+      </v-row>
+    </v-container>
+  </v-card>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { deleteTherapeute, getTherapeutes } from '@/api/therapeutes.api'
+import { ref, onMounted } from 'vue'
 import type { components } from '../../api/generated'
-import { getTarifs } from '@/api/tarifs.api'
+import {
+  createTarif,
+  deleteTarif,
+  getTarifsByTherapeute,
+  toUpdateTarifDto,
+  updateTarif,
+  UpdateTarifDto,
+} from '@/api/tarifs.api'
 
 type ReadTarifDto = components['schemas']['ReadTarifDto']
 
 const tarifs = ref<ReadTarifDto[]>([])
 
+const props = defineProps<{
+  idTherapeute: number
+}>()
+
 onMounted(async () => {
-  fetchTarifs()
+  fetchTarifsByTherapeute()
 })
 
-const fetchTarifs = async () => {
+const fetchTarifsByTherapeute = async () => {
   try {
-    tarifs.value = await getTarifs()
+    tarifs.value = await getTarifsByTherapeute(props.idTherapeute)
   } catch (e) {
     console.error(e)
   }
+}
+
+const addTarif = async () => {
+  await createTarif({
+    description: 'remplir la description',
+    ordre: 1,
+    therapeuteId: props.idTherapeute,
+  })
+  fetchTarifsByTherapeute()
+}
+
+const doUpdateTarif = (tarif: ReadTarifDto) => {
+  let tarifToUpdate = toUpdateTarifDto(tarif)
+  updateTarif(tarif.id, tarifToUpdate)
+}
+
+const removeTarif = async (id: number) => {
+  await deleteTarif(id)
+  fetchTarifsByTherapeute()
 }
 </script>

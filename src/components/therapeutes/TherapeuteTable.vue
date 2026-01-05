@@ -14,7 +14,7 @@
       <template v-slot:top>
         <v-toolbar>
           <v-btn
-            class="me-2 bg-blue"
+            class="me-2 bg-primary"
             rounded="lg"
             text="Ajouter un thérapeute"
             prepend-icon="mdi-plus"

@@ -1,50 +1,53 @@
 <template>
-  <v-form v-if="therapeute">
-    <v-row>
-      <v-col cols="12" md="6">
-        <v-text-field v-model="therapeute.nom" label="Nom"></v-text-field>
-      </v-col>
-      <v-col cols="12" md="6">
-        <v-text-field v-model="therapeute.prenom" label="Prénom"></v-text-field>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-text-field v-model="therapeute.siteWeb" label="Site web"></v-text-field>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" md="6">
-        <v-text-field v-model="therapeute.email" label="Email"></v-text-field>
-      </v-col>
-      <v-col cols="12" md="6">
-        <v-text-field v-model="therapeute.telPortable" label="Portable"></v-text-field>
-      </v-col>
-    </v-row>
-    <v-textarea v-model="therapeute.specialites" label="Spécialités"></v-textarea>
-    <error-form-alert :txt-erreur-submit="txtErreurSubmit"></error-form-alert>
-    <v-btn @click="submit">Enregistrer</v-btn>
-  </v-form>
-  <v-snackbar v-model="snackbar" :timeout="200" color="success" top right>
-    Enregistrement effectué avec succès !
-  </v-snackbar>
+  <v-card title="Fiche therapeute" class="mb-4 pb-4">
+    <v-form v-if="therapeute">
+      <v-container>
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-text-field v-model="therapeute.nom" label="Nom"></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field v-model="therapeute.prenom" label="Prénom"></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-text-field v-model="therapeute.siteWeb" label="Site web"></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-text-field v-model="therapeute.email" label="Email"></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field v-model="therapeute.telPortable" label="Portable"></v-text-field>
+          </v-col>
+        </v-row>
+        <v-textarea v-model="therapeute.specialites" label="Spécialités"></v-textarea>
+
+        <error-form-alert :txt-erreur-submit="txtErreurSubmit"></error-form-alert>
+        <v-btn @click="submit" class="bg-primary">Enregistrer</v-btn>
+      </v-container>
+    </v-form>
+    <v-snackbar v-model="snackbar" :timeout="200" color="success" top right>
+      Enregistrement effectué avec succès !
+    </v-snackbar>
+  </v-card>
+  <tarifs-table v-if="therapeute" :id-therapeute="therapeute.id"></tarifs-table>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { components } from '@/api/generated'
 import {
   getTherapeute,
   updateTherapeute,
   ReadTherapeuteDto,
-  UpdateTherapeuteDto,
-  CreateTherapeuteDto,
   toUpdateTherapeuteDto,
   createTherapeute,
 } from '@/api/therapeutes.api'
-import { omit } from 'lodash'
 import ErrorFormAlert from '../commons/ErrorFormAlert.vue'
+import TarifsTable from '../tarifs/TarifsTable.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -86,13 +89,6 @@ const formatDate = (date?: string) => {
 }
 
 onMounted(fetchTherapeute)
-
-watch(snackbar, (val) => {
-  if (!val) {
-    // le snackbar vient de se fermer
-    router.push('/therapeutes')
-  }
-})
 
 const submit = async () => {
   if (!therapeute.value) return

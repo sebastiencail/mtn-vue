@@ -15,6 +15,10 @@ export function getTarifs() {
   return http<ReadTarifDto[]>(`${TARIFS_ENDPOINT}`)
 }
 
+export function getTarifsByTherapeute(idTherapeute: number) {
+  return http<ReadTarifDto[]>(`${TARIFS_ENDPOINT}?therapeute=${idTherapeute}`)
+}
+
 export function createTarif(data: Partial<CreateTarifDto>) {
   return http<ReadTarifDto>(`${TARIFS_ENDPOINT}`, {
     method: 'POST',
@@ -30,7 +34,7 @@ export function updateTarif(id: string | number, data: Partial<UpdateTarifDto>) 
 }
 
 export function deleteTarif(id: number) {
-  return http<ReadTarifDto>(`${TARIFS_ENDPOINT}/${id}`, {
+  return http(`${TARIFS_ENDPOINT}/${id}`, {
     method: 'DELETE',
   })
 }
