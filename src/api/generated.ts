@@ -91,7 +91,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["SoinController_findAll"];
+        get: operations["SoinController_findTarifs"];
         put?: never;
         post: operations["SoinController_create"];
         delete?: never;
@@ -156,6 +156,7 @@ export interface components {
             nom: string;
             prenom: string;
             specialites: string;
+            presentation: string;
             telPortable: string;
             email?: string;
             siteWeb?: string;
@@ -164,6 +165,7 @@ export interface components {
             nom: string;
             prenom: string;
             specialites: string;
+            presentation: string;
             telPortable: string;
             email?: string;
             siteWeb?: string;
@@ -173,6 +175,7 @@ export interface components {
             nom: string;
             prenom: string;
             specialites: string;
+            presentation: string;
             telPortable: string;
             email?: string;
             siteWeb?: string;
@@ -196,8 +199,22 @@ export interface components {
             ordre: number;
             therapeuteId: number;
         };
-        CreateSoinDto: Record<string, never>;
-        UpdateSoinDto: Record<string, never>;
+        CreateSoinDto: {
+            description: string;
+            ordre: number;
+            therapeuteId: number;
+        };
+        ReadSoinDto: {
+            description: string;
+            ordre: number;
+            therapeuteId: number;
+            id: number;
+        };
+        UpdateSoinDto: {
+            description: string;
+            ordre: number;
+            therapeuteId: number;
+        };
         CreateConsultationDto: Record<string, never>;
         UpdateConsultationDto: Record<string, never>;
     };
@@ -439,9 +456,12 @@ export interface operations {
             };
         };
     };
-    SoinController_findAll: {
+    SoinController_findTarifs: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description ID du thérapeute pour filtrer les soins */
+                therapeute?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -452,7 +472,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ReadSoinDto"][];
+                };
             };
         };
     };
@@ -469,11 +491,13 @@ export interface operations {
             };
         };
         responses: {
-            201: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ReadSoinDto"];
+                };
             };
         };
     };
@@ -492,7 +516,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ReadSoinDto"];
+                };
             };
         };
     };
@@ -534,7 +560,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ReadSoinDto"];
+                };
             };
         };
     };

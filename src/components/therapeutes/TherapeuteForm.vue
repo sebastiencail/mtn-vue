@@ -1,5 +1,5 @@
 <template>
-  <v-card title="Fiche therapeute" class="mb-4 pb-4">
+  <v-card title="Fiche therapeute">
     <v-form v-if="therapeute">
       <v-container>
         <v-row>
@@ -24,6 +24,7 @@
           </v-col>
         </v-row>
         <v-textarea v-model="therapeute.specialites" label="Spécialités"></v-textarea>
+        <v-textarea v-model="therapeute.presentation" label="Présentation"></v-textarea>
 
         <error-form-alert :txt-erreur-submit="txtErreurSubmit"></error-form-alert>
         <v-btn @click="submit" class="bg-primary">Enregistrer</v-btn>
@@ -33,7 +34,10 @@
       Enregistrement effectué avec succès !
     </v-snackbar>
   </v-card>
-  <tarifs-table v-if="therapeute" :id-therapeute="therapeute.id"></tarifs-table>
+  <template v-if="therapeute">
+    <tarifs-table :id-therapeute="therapeute.id" class="mt-4"></tarifs-table>
+    <soins-table :id-therapeute="therapeute.id" class="mt-4"></soins-table>
+  </template>
 </template>
 
 <script setup lang="ts">
@@ -48,6 +52,7 @@ import {
 } from '@/api/therapeutes.api'
 import ErrorFormAlert from '../commons/ErrorFormAlert.vue'
 import TarifsTable from '../tarifs/TarifsTable.vue'
+import SoinsTable from '../soins/SoinsTable.vue'
 
 const route = useRoute()
 const router = useRouter()
